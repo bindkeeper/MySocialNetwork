@@ -3,11 +3,12 @@ from social_app.models import Profile, Post, Like
 
 
 class UserSerializer(serializers.ModelSerializer):
-    #TODO add posts and likes fields
+    posts = serializers.PrimaryKeyRelatedField(many=True, queryset=Post.objects.all())
+    likes = serializers.PrimaryKeyRelatedField(many=True, queryset=Like.objects.all())
 
     class Meta:
         model = Profile
-        fields = ['id', 'username', 'validity', "clearbit_data"]
+        fields = ['id', 'username', 'validity', "clearbit_data", "posts", "likes"]
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
