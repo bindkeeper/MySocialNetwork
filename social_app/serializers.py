@@ -1,6 +1,24 @@
 from rest_framework import serializers
 from social_app.models import Profile, Post, Like
 
+from pyhunter import PyHunter
+import clearbit
+
+clearbit.key = 'sk_5254c897553cb93a13f006573a91f4d4'
+
+
+def get_clearbit_data(email):
+    response = clearbit.Enrichment.find(email=email, srteam=True)
+    return response
+
+
+hunter = PyHunter('0f66ac4aa297fe341926c8b1113dd001f26fbb82')
+
+
+def get_email_validity(email):
+    h_response = hunter.email_verifier(email)
+    return h_response['result']
+
 
 class UserSerializer(serializers.ModelSerializer):
     posts = serializers.PrimaryKeyRelatedField(many=True, queryset=Post.objects.all())
@@ -29,11 +47,17 @@ class UserCreateSerializer(serializers.ModelSerializer):
         if password != password_confirm:
             raise serializers.ValidationError({'password': 'passwords must match'})
 
-        # TODO add verifier
+        email = self.validated_data['email']
+
+        email_validity = get_email_validity(email)
+        print(email + " valideitiy is " + email_validity)
+        clearbit_data = get_clearbit_data(email)
 
         user = Profile(
                         username=self.validated_data['username'],
-                        email=self.validated_data['email']
+                        email=self.validated_data['email'],
+                        clearbit_data=clearbit_data,
+                        validity=email_validity
                         )
         user.set_password(password)
         user.save()
