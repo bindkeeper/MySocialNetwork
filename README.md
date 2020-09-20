@@ -20,7 +20,11 @@ The Authentication done using JWT tokens
     GET /likes
     GET /likes/{like_id}
     DELETE /likes/{like_id}
-    
+ 
+ ## Admin User
+ There is an super user, it can be used to inspect and manipulate the database
+ in order to access admin dashboard browse to the `/admin/` url with your favorite browser.
+ The email is `admin@admin.com` and the password is `admin` 
  ## Testing bot
  The testing bot is located in `bot` directory it reads the configuration file supplied by the --path parameter.
  
