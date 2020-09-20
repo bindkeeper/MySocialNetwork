@@ -54,3 +54,13 @@ class Profile(AbstractBaseUser):
         return True
 
     objects = CustomProfileManager()
+
+
+class Post(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=100, blank=False)
+    text = models.TextField()
+    owner = models.ForeignKey(Profile, related_name='posts', on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['created']
