@@ -71,5 +71,9 @@ class LikeSerializer(serializers.Serializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        #TODO: add validation for only one like per user
+        # enforce only one like per user per post
+        post_id = validated_data['post_id']
+        likes = Like.objects.filter(post_id=post_id, owner=self.context['request'].user)
+        if likes.count() > 0:
+            raise serializers.ValidationError({'likes': 'You can like this post only once'})
         return Like.objects.create(**validated_data)
