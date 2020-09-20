@@ -1,6 +1,6 @@
 from rest_framework import generics
-from social_app.serializers import UserSerializer, UserCreateSerializer, PostSerializer
-from social_app.models import Post
+from social_app.serializers import UserSerializer, UserCreateSerializer, PostSerializer, LikeSerializer
+from social_app.models import Post, Like
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -41,3 +41,16 @@ class PostList(generics.ListCreateAPIView):
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+
+
+class LikeList(generics.ListCreateAPIView):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class LikeDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer

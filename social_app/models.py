@@ -64,3 +64,12 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['created']
+
+
+class Like(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    post = models.ForeignKey(Post, related_name="likes", on_delete=models.CASCADE)
+    owner = models.ForeignKey(Profile, related_name='likes', on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['created']

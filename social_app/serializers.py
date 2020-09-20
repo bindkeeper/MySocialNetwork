@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from social_app.models import Profile, Post
+from social_app.models import Profile, Post, Like
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -44,11 +44,11 @@ class PostSerializer(serializers.Serializer):
     title = serializers.CharField(required=False, allow_blank=True, max_length=100)
     text = serializers.CharField(style={'base_template': 'textarea.html'})
     owner = serializers.ReadOnlyField(source='owner.username')
-    #TODO : add likes field
+    likes = serializers.PrimaryKeyRelatedField(many=True, queryset=Like.objects.all(), required=False)
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'text', 'owner']
+        fields = ['id', 'title', 'text', 'owner', 'likes']
 
     def create(self, validated_data):
         return Post.objects.create(**validated_data)
@@ -58,3 +58,17 @@ class PostSerializer(serializers.Serializer):
         instance.text = validated_data.get('text', instance.text)
         instance.save()
         return instance
+
+
+class LikeSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    post_id = serializers.IntegerField()
+    owner = serializers.ReadOnlyField(source='owner.id')
+
+    class Meta:
+        model = Like
+        fields = '__all__'
+
+    def create(self, validated_data):
+        #TODO: add validation for only one like per user
+        return Like.objects.create(**validated_data)
