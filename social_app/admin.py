@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from social_app.models import Profile
+from social_app.models import Profile, Post, Like
 
 
 class UserCreationForm(forms.ModelForm):
@@ -67,4 +67,6 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(Profile, UserAdmin)
+admin.site.register(Post)
+admin.site.register(Like)
 
